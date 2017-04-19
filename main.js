@@ -1,16 +1,36 @@
-var gameBoard = {
-    a:[0,0,0,0],
-    b:[0,0,0,0],
-    c:[0,0,0,0],
-    d:[0,0,0,0]
+var twentyfortyeight = {
+    gameboard: {
+    },
+    makeBoard: function(numRows) {
+        if(numRows <=10 && numRows > 1) {
+            for(i=0; i<numRows; i++) {
+                this.gameboard["row" + i] = [];
+            }
+
+            for(i=0; i<Object.keys(this.gameboard).length; i++) {
+                for(j=0; j<numRows; j++) {
+                    this.gameboard["row" + i].push(0);
+                }
+            }
+            console.log(this.gameboard);
+        } else {
+            console.log("that is not a valid board size");
+        }
+    }
 }
 
-
-var view = {
+var handlers = {
+    init: function() {
+        view.getBoardSize();
+        handlers.setUpEventListeners();
+    },
     setUpEventListeners: function() {
         document.addEventListener("keydown", function(event) {
-           view.checkKey(event.which); 
+           handlers.checkKey(event.which); 
         });
+    },
+    makeBoard: function(numRows) {
+        twentyfortyeight.makeBoard(numRows);
     },
     checkKey: function(keyvalue) {
         switch(keyvalue) {
@@ -32,4 +52,12 @@ var view = {
         }
     }
 }
-view.setUpEventListeners();
+
+var view = {
+    getBoardSize : function() {
+        var numRows = prompt("how many rows would you like");
+        handlers.makeBoard(numRows);
+    }
+}
+
+handlers.init();
