@@ -2,7 +2,7 @@ var twentyfortyeight = {
     gameboard: {
     },
     makeBoard: function(numRows) {
-        if(numRows <=10 && numRows > 1) {
+        if(numRows <=6 && numRows > 1) {
             for(i=0; i<numRows; i++) {
                 this.gameboard["row" + i] = [];
             }
@@ -12,7 +12,7 @@ var twentyfortyeight = {
                     this.gameboard["row" + i].push(0);
                 }
             }
-            console.log(this.gameboard);
+            handlers.render(numRows);
         } else {
             console.log("that is not a valid board size");
         }
@@ -31,6 +31,9 @@ var handlers = {
     },
     makeBoard: function(numRows) {
         twentyfortyeight.makeBoard(numRows);
+    },
+    render: function(numRows) {
+        view.render(numRows);
     },
     checkKey: function(keyvalue) {
         switch(keyvalue) {
@@ -54,9 +57,29 @@ var handlers = {
 }
 
 var view = {
-    getBoardSize : function() {
+    gameboard: document.querySelector(".gameboard"),
+    getBoardSize: function() {
         var numRows = prompt("how many rows would you like");
         handlers.makeBoard(numRows);
+    },
+    render: function(numRows) {
+        view.buildBoard(numRows);
+        view.displayTiles(numRows);
+    },
+    buildBoard: function(numRows) {
+        var height = (numRows * 90) + (parseInt(numRows) + 1) * 6;
+        view.gameboard.style.height = height + "px";
+        view.gameboard.style.width = height + "px";
+    },
+    displayTiles: function(numRows) {
+        var template = document.querySelector(".tileTemplate");
+        var numTiles = numRows * numRows;
+        for(i=0; i<numTiles; i++) {
+            var newTile = template.cloneNode(true);
+            newTile.className = "tile";
+            console.log(newTile);
+            view.gameboard.appendChild(newTile);
+        }
     }
 }
 
