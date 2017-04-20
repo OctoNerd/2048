@@ -21,8 +21,12 @@ var twentyfortyeight = {
 
 var handlers = {
     init: function() {
-        view.getBoardSize();
+        handlers.getBoardSize();
         handlers.setUpEventListeners();
+    },
+    getBoardSize: function() {
+        var numRows = prompt("how many rows would you like? 2-6");
+        handlers.makeBoard(numRows);
     },
     setUpEventListeners: function() {
         document.addEventListener("keydown", function(event) {
@@ -58,10 +62,6 @@ var handlers = {
 
 var view = {
     gameboard: document.querySelector(".gameboard"),
-    getBoardSize: function() {
-        var numRows = prompt("how many rows would you like");
-        handlers.makeBoard(numRows);
-    },
     render: function(numRows) {
         view.buildBoard(numRows);
         view.displayTiles(numRows);
@@ -72,12 +72,14 @@ var view = {
         view.gameboard.style.width = height + "px";
     },
     displayTiles: function(numRows) {
-        var template = document.querySelector(".tileTemplate");
         var numTiles = numRows * numRows;
+
         for(i=0; i<numTiles; i++) {
-            var newTile = template.cloneNode(true);
+            var newTile = document.createElement("div");
+            var newInnerTile = document.createElement("div");
             newTile.className = "tile";
-            console.log(newTile);
+            newInnerTile.className = "innerTile";
+            newTile.appendChild(newInnerTile);
             view.gameboard.appendChild(newTile);
         }
     }
