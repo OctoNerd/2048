@@ -76,11 +76,13 @@ var view = {
         for(i=0; i<numRows; i++) {
             var newRow = document.createElement("div");
             newRow.className = "gridRow";
+            newRow.id = "row" + i;
             
             for(j=0; j<numRows; j++) {
                 var newTile = document.createElement("div");
                 var newInnerTile = document.createElement("div");
                 newTile.className = "tile";
+                newTile.id = "pos" + i + "-" + j;
                 newInnerTile.className = "innerTile";
                 newRow.appendChild(newTile);
                 newTile.appendChild(newInnerTile);
