@@ -16,6 +16,27 @@ var twentyfortyeight = {
         } else {
             console.log("that is not a valid board size");
         }
+    },
+    insertFirstNums: function() {
+        var numRows = Object.keys(this.gameboard).length;
+        console.log("numRows = " + numRows);
+        var i = 0;
+        while(i < 2) {
+            var x = Math.floor(Math.random() * (numRows));
+            var y = Math.floor(Math.random() * (numRows));
+            console.log("x: " + x + " y: " + y);
+            var boardRow = twentyfortyeight.gameboard["row" + y];
+            console.log("boardRow: " + boardRow);
+            if(boardRow[x] == 0) {
+                boardRow[x] = 2;
+                i++;
+            }
+        }
+        
+        for(j=0; j<numRows; j++) {
+            console.log(this.gameboard["row"+j]);
+        }
+
     }
 }
 
@@ -94,3 +115,4 @@ var view = {
 }
 
 handlers.init();
+twentyfortyeight.insertFirstNums();
