@@ -72,15 +72,21 @@ var view = {
         view.gameboard.style.width = height + "px";
     },
     displayTiles: function(numRows) {
-        var numTiles = numRows * numRows;
 
-        for(i=0; i<numTiles; i++) {
-            var newTile = document.createElement("div");
-            var newInnerTile = document.createElement("div");
-            newTile.className = "tile";
-            newInnerTile.className = "innerTile";
-            newTile.appendChild(newInnerTile);
-            view.gameboard.appendChild(newTile);
+        for(i=0; i<numRows; i++) {
+            var newRow = document.createElement("div");
+            newRow.className = "gridRow";
+            
+            for(j=0; j<numRows; j++) {
+                var newTile = document.createElement("div");
+                var newInnerTile = document.createElement("div");
+                newTile.className = "tile";
+                newInnerTile.className = "innerTile";
+                newRow.appendChild(newTile);
+                newTile.appendChild(newInnerTile);
+            }
+            
+            view.gameboard.appendChild(newRow);
         }
     }
 }
