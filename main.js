@@ -12,7 +12,6 @@ var twentyfortyeight = {
                     this.gameboard["row" + i].push(0);
                 }
             }
-            handlers.render(numRows);
         } else {
             console.log("that is not a valid board size");
         }
@@ -37,6 +36,7 @@ var twentyfortyeight = {
             console.log(this.gameboard["row"+j]);
         }
 
+        handlers.render(this.gameboard);
     }
 }
 
@@ -44,6 +44,7 @@ var handlers = {
     init: function() {
         handlers.getBoardSize();
         handlers.setUpEventListeners();
+        twentyfortyeight.insertFirstNums();
     },
     getBoardSize: function() {
         var numRows = prompt("how many rows would you like? 2-6");
@@ -56,25 +57,37 @@ var handlers = {
     },
     makeBoard: function(numRows) {
         twentyfortyeight.makeBoard(numRows);
+        view.buildBoard(numRows);
     },
-    render: function(numRows) {
-        view.render(numRows);
+    render: function(gameboardObj) {
+        var numRows = Object.keys(gameboardObj).length;
+        for(i=0; i<numRows; i++) {
+            for(j=0; j<numRows; j++) {
+                if(gameboardObj["row"+i][j] != 0){
+                    var tileValue = gameboardObj["row"+i][j];
+                    var xCord = j;
+                    var yCord = i;
+                    console.log("Tile value: " + tileValue + " xCord: " + xCord + " yCord: " + yCord);
+                    view.displayTiles(tileValue, xCord, yCord);
+                }
+            }
+        }
     },
     checkKey: function(keyvalue) {
         switch(keyvalue) {
-            case 37:
+            case 37://left arrow
                 console.log("left");
                 break;
-            case 38:
+            case 38:// up arrow
                 console.log("up");
                 break;
-            case 39:
+            case 39:// right arrow
                 console.log("right");
                 break;
-            case 40:
+            case 40:// down arrow
                 console.log("down");
                 break;
-            default:
+            default:// not an arrow key
                 console.log("other key with value " + keyvalue);
                 break;
         }
@@ -83,16 +96,10 @@ var handlers = {
 
 var view = {
     gameboard: document.querySelector(".gameboard"),
-    render: function(numRows) {
-        view.buildBoard(numRows);
-        view.displayTiles(numRows);
-    },
     buildBoard: function(numRows) {
         var height = (numRows * 90) + (parseInt(numRows) + 1) * 6;
         view.gameboard.style.height = height + "px";
         view.gameboard.style.width = height + "px";
-    },
-    displayTiles: function(numRows) {
 
         for(i=0; i<numRows; i++) {
             var newRow = document.createElement("div");
@@ -101,18 +108,22 @@ var view = {
             
             for(j=0; j<numRows; j++) {
                 var newTile = document.createElement("div");
-                var newInnerTile = document.createElement("div");
+                //var newInnerTile = document.createElement("div");
                 newTile.className = "tile";
                 newTile.id = "pos" + i + "-" + j;
-                newInnerTile.className = "innerTile";
+                //newInnerTile.className = "innerTile";
                 newRow.appendChild(newTile);
-                newTile.appendChild(newInnerTile);
+                //newTile.appendChild(newInnerTile);
             }
-            
             view.gameboard.appendChild(newRow);
         }
+    },
+    displayTiles: function(tileValue, xCord, yCord) {
+        var tile = document.getElementById("pos" + yCord + "-" + xCord);
+        //var innerTile = tile.querySelector(".innerTile");
+        tile.className = "tile tile-" + tileValue;
+        tile.innerHTML = tileValue;
     }
 }
 
 handlers.init();
-twentyfortyeight.insertFirstNums();
