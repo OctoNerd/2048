@@ -37,6 +37,42 @@ var twentyfortyeight = {
         }
 
         handlers.render(this.gameboard);
+    },
+    moveTiles: function(direction) {
+        var gameboard = this.gameboard;
+        twentyfortyeight.numRows = Object.keys(this.gameboard).length;
+        var numRows = twentyfortyeight.numRows;
+
+        //right
+        if(direction == "right") {
+            for(var i=numRows; i>0; i--) {
+                for(var j=0; j<(numRows-1); j++) {
+                    if((gameboard["row"+j][i] != 0) && (i != (numRows-1))) {
+                        twentyfortyeight.checkRowSpaces(j, i, direction);
+                    }
+                }
+            }
+        }
+    },
+    checkRowSpaces: function(row, column, direction) {
+        switch(direction) {
+            case "right":
+                var tileValue = this.gameboard["row"+row][column];
+                var nextTile = this.gameboard["row"+row][column + 1];
+                this.gameboard["row"+row][column + 1] = tileValue;
+                this.gameboard["row"+row][column] = 0;
+                break;
+            case "left":
+                break;
+            case "up":
+                break;
+            case "down":
+                break;
+            default:
+                break;
+        }
+        
+        handlers.render(this.gameboard);
     }
 }
 
@@ -63,13 +99,11 @@ var handlers = {
         var numRows = Object.keys(gameboardObj).length;
         for(i=0; i<numRows; i++) {
             for(j=0; j<numRows; j++) {
-                if(gameboardObj["row"+i][j] != 0){
-                    var tileValue = gameboardObj["row"+i][j];
-                    var xCord = j;
-                    var yCord = i;
-                    console.log("Tile value: " + tileValue + " xCord: " + xCord + " yCord: " + yCord);
-                    view.displayTiles(tileValue, xCord, yCord);
-                }
+                var tileValue = gameboardObj["row"+i][j];
+                var xCord = j;
+                var yCord = i;
+                //console.log("Tile value: " + tileValue + " xCord: " + xCord + " yCord: " + yCord);
+                view.displayTiles(tileValue, xCord, yCord);
             }
         }
     },
@@ -82,7 +116,8 @@ var handlers = {
                 console.log("up");
                 break;
             case 39:// right arrow
-                console.log("right");
+                twentyfortyeight.moveTiles("right");
+                //console.log("right");
                 break;
             case 40:// down arrow
                 console.log("down");
@@ -97,7 +132,7 @@ var handlers = {
 var view = {
     gameboard: document.querySelector(".gameboard"),
     buildBoard: function(numRows) {
-        var height = (numRows * 90) + (parseInt(numRows) + 1) * 6;
+        var height = (numRows * 90) + (parseInt(numRows) + 1) * 6;//90x90px tiles and 6px gutters
         view.gameboard.style.height = height + "px";
         view.gameboard.style.width = height + "px";
 
@@ -122,7 +157,12 @@ var view = {
         var tile = document.getElementById("pos" + yCord + "-" + xCord);
         //var innerTile = tile.querySelector(".innerTile");
         tile.className = "tile tile-" + tileValue;
-        tile.innerHTML = tileValue;
+        if(tileValue != 0) {
+            tile.innerHTML = tileValue;
+        } else {
+            tile.innerHTML = "";
+        }
+
     }
 }
 
