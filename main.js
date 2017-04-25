@@ -16,63 +16,119 @@ var twentyfortyeight = {
             console.log("that is not a valid board size");
         }
     },
-    insertFirstNums: function() {
+    insertRandNums: function() {
         var numRows = Object.keys(this.gameboard).length;
-        console.log("numRows = " + numRows);
         var i = 0;
-        while(i < 2) {
+
+        //errors out if there is no place to replace a 0 TODO
+
+        while(i < 1) {
             var x = Math.floor(Math.random() * (numRows));
             var y = Math.floor(Math.random() * (numRows));
-            console.log("x: " + x + " y: " + y);
             var boardRow = twentyfortyeight.gameboard["row" + y];
-            console.log("boardRow: " + boardRow);
             if(boardRow[x] == 0) {
                 boardRow[x] = 2;
                 i++;
             }
         }
-        
-        for(j=0; j<numRows; j++) {
-            console.log(this.gameboard["row"+j]);
-        }
-
         handlers.render(this.gameboard);
     },
-    moveTiles: function(direction) {
+    shift: function(direction) {
+        var boardLength = Object.keys(this.gameboard).length;
+        var maxRow = boardLength -1;
         var gameboard = this.gameboard;
-        twentyfortyeight.numRows = Object.keys(this.gameboard).length;
-        var numRows = twentyfortyeight.numRows;
-
-        //right
-        if(direction == "right") {
-            for(var i=numRows; i>0; i--) {
-                for(var j=0; j<(numRows-1); j++) {
-                    if((gameboard["row"+j][i] != 0) && (i != (numRows-1))) {
-                        twentyfortyeight.checkRowSpaces(j, i, direction);
-                    }
-                }
-            }
-        }
-    },
-    checkRowSpaces: function(row, column, direction) {
         switch(direction) {
             case "right":
-                var tileValue = this.gameboard["row"+row][column];
-                var nextTile = this.gameboard["row"+row][column + 1];
-                this.gameboard["row"+row][column + 1] = tileValue;
-                this.gameboard["row"+row][column] = 0;
+                // if(timesMoved < maxRow){
+                    for(var y=0; y<boardLength; y++) {
+                        var currentRow = gameboard["row"+y];
+                        var tempMax = maxRow;
+
+                        for(var x=maxRow; x>0; x--) {
+                            if(currentRow[tempMax] == 0) {
+                                currentRow[x] = currentRow[x-1];
+                                currentRow[x-1] = 0;
+                            } else {
+                                if(currentRow[tempMax] == currentRow[tempMax -1]) {
+                                    currentRow[tempMax] = currentRow[tempMax] * 2;
+                                    currentRow[tempMax -1] = 0;
+                                }
+                            }
+                            tempMax--;
+                        }
+                    }
+                // }
                 break;
             case "left":
+                // if(timesMoved < maxRow) {
+                    for(var y=0; y<boardLength; y++) {
+                        var currentRow = gameboard["row"+y];
+                        var tempMin = 0;
+
+                        for(var x=0; x<maxRow; x++) {
+                            if(currentRow[tempMin] == 0) {
+                                currentRow[x] = currentRow[x+1];
+                                currentRow[x+1] = 0;
+                            } else {
+                                if(currentRow[tempMin] == currentRow[tempMin + 1]) {
+                                    currentRow[tempMin] = currentRow[tempMin] * 2;
+                                    currentRow[tempMin + 1] = 0;
+                                }
+                            }
+                            tempMin++;
+                        }
+                    }
+                // }
                 break;
             case "up":
+                // if(timesMoved < maxRow) {
+                    for(var x=0; x<boardLength; x++) {
+                        var tempMin = 0;
+
+                        for(var y=0; y<maxRow; y++) {
+                            var currentRow = gameboard["row" + tempMin];
+                            var nextRowNum = tempMin + 1;
+                            var nextRow = gameboard["row" + nextRowNum];
+                            if(currentRow[x] == 0) {
+                                currentRow[x] = nextRow[x];
+                                nextRow[x] = 0;
+                            } else {
+                                if(currentRow[x] == nextRow[x]) {
+                                    currentRow[x] = currentRow[x] * 2;
+                                    nextRow[x] = 0;
+                                }
+                            }
+                            tempMin++;
+                        }
+                    }
+                // }
                 break;
             case "down":
+                // if(timesMoved < maxRow) {
+                    for(var x=0; x<boardLength; x++) {
+                        var tempMax = maxRow;
+
+                        for(var y=0; y<maxRow; y++) {
+                            var currentRow = gameboard["row" + tempMax];
+                            var prevRowNum = tempMax - 1;
+                            var prevRow = gameboard["row" + prevRowNum];
+                            if(currentRow[x] == 0) {
+                                currentRow[x] = prevRow[x];
+                                prevRow[x] = 0;
+                            } else {
+                                if(currentRow[x] == prevRow[x]) {
+                                    currentRow[x] = currentRow[x] * 2;
+                                    prevRow[x] = 0;
+                                }
+                            }
+                            tempMax--;
+                        }
+                    }
+                // }
                 break;
             default:
                 break;
         }
-        
-        handlers.render(this.gameboard);
     }
 }
 
@@ -80,7 +136,8 @@ var handlers = {
     init: function() {
         handlers.getBoardSize();
         handlers.setUpEventListeners();
-        twentyfortyeight.insertFirstNums();
+        twentyfortyeight.insertRandNums();
+        twentyfortyeight.insertRandNums();
     },
     getBoardSize: function() {
         var numRows = prompt("how many rows would you like? 2-6");
@@ -110,22 +167,24 @@ var handlers = {
     checkKey: function(keyvalue) {
         switch(keyvalue) {
             case 37://left arrow
-                console.log("left");
+                twentyfortyeight.shift("left");
                 break;
             case 38:// up arrow
-                console.log("up");
+                twentyfortyeight.shift("up");
                 break;
             case 39:// right arrow
-                twentyfortyeight.moveTiles("right");
+                twentyfortyeight.shift("right");
                 //console.log("right");
                 break;
             case 40:// down arrow
-                console.log("down");
+                twentyfortyeight.shift("down");
                 break;
             default:// not an arrow key
                 console.log("other key with value " + keyvalue);
                 break;
         }
+        twentyfortyeight.insertRandNums();
+        handlers.render(twentyfortyeight.gameboard);
     }
 }
 
